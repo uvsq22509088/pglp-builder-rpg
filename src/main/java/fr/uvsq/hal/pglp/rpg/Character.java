@@ -35,7 +35,7 @@ public class Character {
    *
    * @param builder le builder
    */
-Character(CharacterBuilder builder) {
+  Character(CharacterBuilder builder) {
     this.name = builder.name;
     this.proficiencyBonus = builder.proficiencyBonus;
     this.abilities = builder.abilities;
@@ -77,7 +77,7 @@ Character(CharacterBuilder builder) {
    * @param skill la compétence
    * @return le bonus
    */
- public int getProficiencyBonusIn(Skill skill) {
+  public int getProficiencyBonusIn(Skill skill) {
     int modifier = abilities.get(skill.getAbility()).getModifier();
     if (isProficientIn(skill)) {
         return modifier + proficiencyBonus;
