@@ -2,7 +2,8 @@ package fr.uvsq.hal.pglp.rpg;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.util.Map;
+import java.util.Set;
 import java.util.*;
 
 
@@ -34,10 +35,12 @@ public class Character {
    *
    * @param builder le builder
    */
-  Character(CharacterBuilder builder) {
+Character(CharacterBuilder builder) {
     this.name = builder.name;
     this.proficiencyBonus = builder.proficiencyBonus;
-  }
+    this.abilities = builder.abilities;
+    this.skills = builder.skills;
+}
 
   /**
    * Retourne le nom du personnage.
@@ -56,8 +59,8 @@ public class Character {
    * @return le score
    */
   public AbilityScore get(Ability ability) {
-    throw new UnsupportedOperationException("Not yet implemented.");
-  }
+    return abilities.get(ability);
+}
 
   /**
    * Retourne le bonus de maîtrise.
@@ -74,9 +77,13 @@ public class Character {
    * @param skill la compétence
    * @return le bonus
    */
-  public int getProficiencyBonusIn(Skill skill) {
-    throw new UnsupportedOperationException("Not yet implemented.");
-  }
+ public int getProficiencyBonusIn(Skill skill) {
+    int modifier = abilities.get(skill.getAbility()).getModifier();
+    if (isProficientIn(skill)) {
+        return modifier + proficiencyBonus;
+    }
+    return modifier;
+}
 
   /**
    * Vérifie si le personnage maîtrise la compétence.
@@ -85,6 +92,6 @@ public class Character {
    * @return true si le personnage maîtrise la compétence, false sinon
    */
   public boolean isProficientIn(Skill skill) {
-    throw new UnsupportedOperationException("Not yet implemented.");
-  }
+    return skills.contains(skill);
+}
 }
