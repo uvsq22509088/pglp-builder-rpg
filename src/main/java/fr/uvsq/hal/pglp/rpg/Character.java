@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+
 import static fr.uvsq.hal.pglp.rpg.Dice.d20;
 
 /**
@@ -21,6 +22,12 @@ public class Character {
 
   /** Bonus de maîtrise. */
   private final int proficiencyBonus;
+
+  /** Les scores de caractéristiques. */
+  Map<Ability, AbilityScore> abilities;
+
+  /** Les compétences maîtrisées. */
+  Set<Skill> skills;
 
   /**
    * Construit un personnage à partir d'un builder.

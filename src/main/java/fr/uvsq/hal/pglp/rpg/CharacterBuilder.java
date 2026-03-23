@@ -2,7 +2,12 @@ package fr.uvsq.hal.pglp.rpg;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,6 +41,8 @@ public class CharacterBuilder {
 
   final String name;
   int proficiencyBonus;
+  Map<Ability, AbilityScore> abilities;
+  Set<Skill> skills;
 
   /**
    * Crée un personnage en générant les caractéristiques de manière aléatoire.
@@ -58,8 +65,56 @@ public class CharacterBuilder {
    *                       (chaque caractéristique doit être mentionnée une et une seule fois)
    */
   public CharacterBuilder(String name, Ability[] abilitiesOrder) {
-    throw new UnsupportedOperationException("Not yet implemented.");
+    if (name == null) {
+    throw new NullPointerException(MSG_NAME_MANDATORY);
+    }   
+    if (name.isBlank()) {
+        throw new IllegalArgumentException(MSG_NAME_NOT_BLANK);
+    }
+    if (abilitiesOrder == null) {
+        throw new IllegalArgumentException(MSG_ORDER_MANDATORY);
+    }
+    Set<Ability> seen = EnumSet.noneOf(Ability.class);
+  for (Ability ability : abilitiesOrder) {
+    if (!seen.add(ability)) {
+        throw new IllegalArgumentException("duplicate element: " + ability);
+    }
   }
+    if (seen.size() != Ability.values().length) {
+       throw new IllegalArgumentException(MSG_ORDER_VALID);
+    }
+
+    this.name = name;
+
+    // Générer les stats — recommencer si somme pas entre 60 et 80
+    AbilityScore[] scores;
+    int sum;
+    do {
+        scores = new AbilityScore[Ability.values().length];
+        for (int i = 0; i < scores.length; i++) {
+            scores[i] = new AbilityScore();
+        }
+        sum = Arrays.stream(scores)
+            .mapToInt(AbilityScore::getScore)
+            .sum();
+        logger.debug("Sum of ability scores : {}", sum);
+    } while (sum < MIN_SUM_SCORE || sum > MAX_SUM_SCORE);
+
+    // Trier du plus grand au plus petit
+    Arrays.sort(scores, Comparator.reverseOrder());
+
+    // Attribuer selon l'ordre de préférence
+    abilities = new EnumMap<>(Ability.class);
+    for (int i = 0; i < abilitiesOrder.length; i++) {
+        abilities.put(abilitiesOrder[i], scores[i]);
+    }
+
+    // Compétences vides pour l'instant
+    skills = EnumSet.noneOf(Skill.class);
+
+    // Bonus de maîtrise par défaut
+    this.proficiencyBonus = FIRST_LEVEL_PROFICIENCY_BONUS;
+}
 
   /**
    * Crée le personnage.
