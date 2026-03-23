@@ -122,8 +122,8 @@ public class CharacterBuilder {
    * @return le personnage
    */
   public Character build() {
-    throw new UnsupportedOperationException("Not yet implemented.");
-  }
+    return new Character(this);
+}
 
   /**
    * Affecte les scores prédéfinis aux caractéristiques dans l'ordre précisé.
@@ -134,7 +134,11 @@ public class CharacterBuilder {
    * @return le builder
    */
   public CharacterBuilder nonRamdomAbilities(Ability[] abilitiesOrder) {
-    throw new UnsupportedOperationException("Not yet implemented.");  }
+    for (int i = 0; i < abilitiesOrder.length; i++) {
+        abilities.put(abilitiesOrder[i], new AbilityScore(PREDEFINED_SCORES[i]));
+    }
+    return this;
+}
 
   /**
    * Fixe le score d'une caractéristique.
@@ -145,7 +149,9 @@ public class CharacterBuilder {
    * @return le builder
    */
   public CharacterBuilder setAbility(Ability ability, int score) {
-    throw new UnsupportedOperationException("Not yet implemented.");  }
+    abilities.put(ability, new AbilityScore(score));
+    return this;
+}
 
   /**
    * Fixe le bonus de maîtrise du personnage.
@@ -155,7 +161,9 @@ public class CharacterBuilder {
    * @return le builder
    */
   public CharacterBuilder setProficiencyBonus(int proficiencyBonus) {
-    throw new UnsupportedOperationException("Not yet implemented.");  }
+    this.proficiencyBonus = proficiencyBonus;
+    return this;
+}
 
   /**
    * Indique les compétences que le personnage maîtrise.
@@ -164,5 +172,9 @@ public class CharacterBuilder {
    * @return le builder
    */
   public CharacterBuilder isProficientIn(Skill... skills) {
-    throw new UnsupportedOperationException("Not yet implemented.");  }
+    for (Skill skill : skills) {
+        this.skills.add(skill);
+    }
+    return this;
+}
 }
